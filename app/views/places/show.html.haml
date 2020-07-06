@@ -13,7 +13,7 @@
   = @place.longitude
 = link_to 'Edit', edit_place_path(@place)
 |
-= link_to 'Back', places_path
+= link_to 'Back', places_path, data: {"turbolinks" => false}
 
 
 
@@ -51,31 +51,133 @@
       var start = new google.maps.LatLng(gon.lat, gon.lng);  
       //リクエストの終着点の位置（Grand Central Station 到着地点の緯度経度）
       
-      var end = new google.maps.LatLng( 35.3368233,139.4461267);  
-      console.log(start);
-      // ルートを取得するリクエスト
-      var request = {
+      
+      var ends = new Array;
+      ends = [];
+      var distanceOrigin = new Array;
+      distanceOrigin = [];
+      var distanceClone = new Array;
+      distanceClone = [];
+      var distanceEdit = new Array;
+      distanceEdit = [];
+      for (var i = 0; i < gon.lats.length; i++) {
+        ends.push(new google.maps.LatLng(gon.lats[i], gon.lngs[i]));
+      }
+      for (var j = 0; j < gon.lats.length; j++) {
+        distanceOrigin[j] = google.maps.geometry.spherical.computeDistanceBetween(start, ends[j]);
+        distanceClone[j] = google.maps.geometry.spherical.computeDistanceBetween(start, ends[j]);
+        if (distanceOrigin[j] === Math.min.apply(null, distanceOrigin)) {
+          var end1 = ends[j];
+          var goalName1 = gon.places[j].name
+          startName = gon.place.name
+        }
+      } 
+
+      
+
+     
+
+      function compare(a, b){
+        let comparison = 0;
+
+        if (a > b) {
+          comparison = 1;
+        } else if (b > a) {
+          comparison = -1;
+        }
+
+        return comparison;
+      }
+
+      distanceEdit = distanceClone.sort(compare);
+
+      for (var i = 0; i < gon.lats.length; i++) {
+        if (distanceOrigin[i] === distanceEdit[1]) {
+          var end2 = ends[i];
+          var goalName2 = gon.places[i].name;
+        }
+        if (distanceOrigin[i] === distanceEdit[2]) {
+          var end3 = ends[i];
+          var goalName3 = gon.places[i].name;
+        }
+        
+      }
+      console.log(distanceOrigin);
+      console.log(distanceEdit);
+      console.log(goalName2);
+      
+
+      var Start_infowindow = new google.maps.InfoWindow({
+        content: startName,
+        position: start
+      });
+      var End_infowindow1 = new google.maps.InfoWindow({
+        content: goalName1,
+        position: end1
+      });
+      var End_infowindow2 = new google.maps.InfoWindow({
+        content: goalName2,
+        position: end2
+      });
+      var End_infowindow3 = new google.maps.InfoWindow({
+        content: goalName3,
+        position: end3
+      });
+      
+       // ルートを取得するリクエスト
+      var request1 = {
         origin: start,      // 出発地点の緯度経度
-        destination: end,   // 到着地点の緯度経度
+        destination: end1,   // 到着地点の緯度経度
         travelMode: 'WALKING' //トラベルモード（歩き）
       };
+       var request2 = {
+        origin: start,      // 出発地点の緯度経度
+        destination: end2,   // 到着地点の緯度経度
+        travelMode: 'WALKING' //トラベルモード（歩き）
+      };
+       var request3 = {
+        origin: start,      // 出発地点の緯度経度
+        destination: end3,   // 到着地点の緯度経度
+        travelMode: 'WALKING' //トラベルモード（歩き）
+      };
+
       
       //DirectionsService のオブジェクトのメソッド route() にリクエストを渡し、
       //コールバック関数で結果を setDirections(result) で directionsRenderer にセットして表示
-      directionsService.route(request, function(result, status) {
+      directionsService.route(request1, function(result, status) {
         //ステータスがOKの場合、
         if (status === 'OK') {
           directionsRenderer.setDirections(result); //取得したルート（結果：result）をセット
+          Start_infowindow.open(map);
+          End_infowindow1.open(map);
         }else{
           alert("取得できませんでした：" + status);
         }
       });
-      
-    }
-
-
-
-    
-  %script{:async => "", :defer => "defer", :src => "https://maps.googleapis.com/maps/api/js?key=AIzaSyAU8Lqc8zivL85a3FicZriuI5a_J8II3fA&callback=initMap"}
+      directionsService.route(request2, function(result, status) {
+        //ステータスがOKの場合、
+        if (status === 'OK') {
+          directionsRenderer.setDirections(result); //取得したルート（結果：result）をセット
+          Start_infowindow.open(map);
+          End_infowindow1.open(map);
+        }else{
+          alert("取得できませんでした：" + status);
+        }
+      });
+      directionsService.route(request3, function(result, status) {
+        //ステータスがOKの場合、
+        if (status === 'OK') {
+          directionsRenderer.setDirections(result); //取得したルート（結果：result）をセット
+          Start_infowindow.open(map);
+          End_infowindow1.open(map);
+        }else{
+          alert("取得できませんでした：" + status);
+        }
+      });
+     
+    };
+   
+  %script{:async => "", :defer => "defer", :src => "https://maps.googleapis.com/maps/api/js?key=AIzaSyAU8Lqc8zivL85a3FicZriuI5a_J8II3fA&callback=initMap&libraries=geometry"}
+  
   / YOUR_API_KEYの部分は取得した APIキーで置き換えます。
 

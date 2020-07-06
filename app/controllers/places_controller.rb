@@ -5,18 +5,15 @@ class PlacesController < ApplicationController
   # GET /places.json
   def index
      @places = Place.all
-    # @hash = Gmaps4rails.build_markers(@places) do |place, marker|
-    #   marker.lat place.latitude
-    #   marker.lng place.longitude
-    #   marker.infowindow place.name
-    # end
   end
 
   # GET /places/1
   # GET /places/1.json
   def show
     @place = Place.find(params[:id]) #showページを開いた地点のデータを取得
+    gon.place = @place
     @places = Place.where.not(id: @place.id)  #@placeのid以外のデータを取得
+    gon.places = @places
     @lat = @place.latitude
     @lng = @place.longitude
     gon.lat = @lat
@@ -32,6 +29,7 @@ class PlacesController < ApplicationController
       marker.lng place.longitude
       marker.infowindow place.name
     end
+    
   end
 
   # GET /places/new
