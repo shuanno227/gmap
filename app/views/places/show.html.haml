@@ -21,17 +21,35 @@
 
 %head
   :css
-    #gmap {
+    #gmap1, #gmap2, #gmap3 {
       height: 400px;
-      width: 600px;
+      width: 800px;
     }
+    
 %body
-  #gmap
+  %p.gmapTitle1 １番目に近い地点
+  .gamp1#gmap1
+  %p.gmapTitle2 2番目に近い地点
+  .gmap2#gmap2
+  %p.gmapTitle3 3番目に近い地点
+  .gmap3#gmap3
   / 地図を表示する領域
   :javascript
     function initMap() { 
       // 地図を生成して表示
-      var map = new google.maps.Map(document.getElementById("gmap"), {
+      var map1 = new google.maps.Map(document.getElementById("gmap1"), {
+        zoom: 13,
+        center: new google.maps.LatLng(gon.lat, gon.lng),  //Madison Av/E 38 St
+        mapTypeId: "roadmap"
+        
+      });
+      var map2 = new google.maps.Map(document.getElementById("gmap2"), {
+        zoom: 13,
+        center: new google.maps.LatLng(gon.lat, gon.lng),  //Madison Av/E 38 St
+        mapTypeId: "roadmap"
+        
+      });
+      var map3 = new google.maps.Map(document.getElementById("gmap3"), {
         zoom: 13,
         center: new google.maps.LatLng(gon.lat, gon.lng),  //Madison Av/E 38 St
         mapTypeId: "roadmap"
@@ -39,14 +57,17 @@
       });
       
       //DirectionsService のオブジェクトを生成
-      var directionsService = new google.maps.DirectionsService();
-      
+      var directionsService1 = new google.maps.DirectionsService();
+      var directionsService2 = new google.maps.DirectionsService();
+      var directionsService3 = new google.maps.DirectionsService();
       //DirectionsRenderer のオブジェクトを生成
-      var directionsRenderer = new google.maps.DirectionsRenderer();
-      
+      var directionsRenderer1 = new google.maps.DirectionsRenderer();
+      var directionsRenderer2 = new google.maps.DirectionsRenderer();
+      var directionsRenderer3 = new google.maps.DirectionsRenderer();
       //directionsRenderer と地図を紐付け
-      directionsRenderer.setMap(map); 
-      
+      directionsRenderer1.setMap(map1); 
+      directionsRenderer2.setMap(map2); 
+      directionsRenderer3.setMap(map3);
       //リクエストの出発点の位置（Empire State Building 出発地点の緯度経度）
       var start = new google.maps.LatLng(gon.lat, gon.lng);  
       //リクエストの終着点の位置（Grand Central Station 到着地点の緯度経度）
@@ -72,11 +93,6 @@
           startName = gon.place.name
         }
       } 
-
-      
-
-     
-
       function compare(a, b){
         let comparison = 0;
 
@@ -102,12 +118,15 @@
         }
         
       }
-      console.log(distanceOrigin);
-      console.log(distanceEdit);
-      console.log(goalName2);
-      
-
-      var Start_infowindow = new google.maps.InfoWindow({
+      var Start_infowindow1 = new google.maps.InfoWindow({
+        content: startName,
+        position: start
+      });
+      var Start_infowindow2 = new google.maps.InfoWindow({
+        content: startName,
+        position: start
+      });
+      var Start_infowindow3 = new google.maps.InfoWindow({
         content: startName,
         position: start
       });
@@ -144,38 +163,41 @@
       
       //DirectionsService のオブジェクトのメソッド route() にリクエストを渡し、
       //コールバック関数で結果を setDirections(result) で directionsRenderer にセットして表示
-      directionsService.route(request1, function(result, status) {
+      directionsService1.route(request1, function(result, status) {
         //ステータスがOKの場合、
         if (status === 'OK') {
-          directionsRenderer.setDirections(result); //取得したルート（結果：result）をセット
-          Start_infowindow.open(map);
-          End_infowindow1.open(map);
+          directionsRenderer1.setDirections(result); //取得したルート（結果：result）をセット
+          Start_infowindow1.open(map1);
+          End_infowindow1.open(map1);
         }else{
           alert("取得できませんでした：" + status);
         }
       });
-      directionsService.route(request2, function(result, status) {
+      directionsService2.route(request2, function(result, status) {
         //ステータスがOKの場合、
         if (status === 'OK') {
-          directionsRenderer.setDirections(result); //取得したルート（結果：result）をセット
-          Start_infowindow.open(map);
-          End_infowindow1.open(map);
+          directionsRenderer2.setDirections(result); //取得したルート（結果：result）をセット
+          Start_infowindow2.open(map2);
+          End_infowindow2.open(map2);
         }else{
           alert("取得できませんでした：" + status);
         }
       });
-      directionsService.route(request3, function(result, status) {
+      directionsService3.route(request3, function(result, status) {
         //ステータスがOKの場合、
         if (status === 'OK') {
-          directionsRenderer.setDirections(result); //取得したルート（結果：result）をセット
-          Start_infowindow.open(map);
-          End_infowindow1.open(map);
+          directionsRenderer3.setDirections(result); //取得したルート（結果：result）をセット
+          Start_infowindow3.open(map3);
+          End_infowindow3.open(map3);
         }else{
           alert("取得できませんでした：" + status);
         }
       });
-     
+      
     };
+  
+
+    
    
   %script{:async => "", :defer => "defer", :src => "https://maps.googleapis.com/maps/api/js?key=AIzaSyAU8Lqc8zivL85a3FicZriuI5a_J8II3fA&callback=initMap&libraries=geometry"}
   
