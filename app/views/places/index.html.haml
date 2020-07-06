@@ -1,0 +1,39 @@
+%p#notice= notice
+%h1 Places
+%table
+  %thead
+    %tr
+      %th Name
+      %th Description
+      %th Latitude
+      %th Longitude
+      %th{:colspan => "3"}
+  %tbody
+    - @places.each do |place|
+      %tr
+        %td= place.name
+        %td= place.description
+        %td= place.latitude
+        %td= place.longitude
+        %td= link_to 'Show', place
+        %td= link_to 'Edit', edit_place_path(place)
+        %td= link_to 'Destroy', place, method: :delete, data: { confirm: 'Are you sure?' }
+%br/
+= link_to 'New Place', new_place_path
+
+-# %div{:style => "width: 100%;"}
+-#   #map{:style => "width: 100%; height: 600px;"}
+
+-# :javascript
+-#   handler = Gmaps.build('Google');
+-#   handler.buildMap({ 
+-#     provider: {},
+-#     internal: {id: 'map'}
+-#     }, 
+-#     function(){
+-#     markers = handler.addMarkers(#{raw @hash.to_json})
+-#     handler.bounds.extendWith(markers);
+-#     handler.fitMapToBounds();
+-#     handler.getMap().setCenter(new google.maps.LatLng(35.681298, 139.7640582));
+-#     handler.getMap().setZoom(15);
+-#   });

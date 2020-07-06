@@ -1,0 +1,9 @@
+%h1 Editing Place
+= render 'form', place: @place
+= link_to 'Show', @place
+|
+= link_to 'Back', places_path
+
+%div{:style => "width: 100%;"}
+  #map{:style => "width: 100%; height: 600px;"}
+
